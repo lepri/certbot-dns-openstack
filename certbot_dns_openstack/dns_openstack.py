@@ -68,8 +68,15 @@ class Authenticator(dns_common.DNSAuthenticator):
             raise errors.PluginError(
                 'Unable to determine zone identifier for {0} using '
                 'zone names: {1}'.format(domain, domain_name_guesses))
-        self.recordset = self.cloud.create_recordset(
-            self.zone['id'], validation_name + '.', "TXT", [validation])
+        self.recordset = self.cloud.get_recordset(
+                self.zone['id'], validation_name + '.')
+        if self.recordset:
+            self.cloud.update_recordset(
+                self.zone['id'], validation_name + '.',
+                records=self.recordset.records + [validation])
+        else:
+            self.recordset = self.cloud.create_recordset(
+                self.zone['id'], validation_name + '.', "TXT", [validation])
 
     def _cleanup(self, domain, validation_name, validation):
         if getattr(self, 'recordset', False):
