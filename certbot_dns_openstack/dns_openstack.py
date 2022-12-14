@@ -13,8 +13,6 @@
 # under the License.
 import logging
 
-import zope.interface
-
 from certbot import errors
 from certbot.plugins import dns_common
 
